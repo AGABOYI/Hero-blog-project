@@ -20,6 +20,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Install curl (required by wait-for-backend.sh)
+RUN apk add --no-cache curl
+
 # Install serve for serving production files
 RUN npm install -g serve
 
