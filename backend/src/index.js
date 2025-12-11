@@ -9,11 +9,24 @@ import { initWebSocketServer } from "./ws/socketServer.js";
 import healthRouter, { setDbReady } from "./routes/health.js";
 
 const app = express();
-const port = 8080;
-
 const server = http.createServer(app);
+const port = 8080;
+const allowedOrigins = [
+  "http://localhost:3000", //  
+  "http://frontend:3000",  // 
+  "http://localhost:5173"  // 
+];
 
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({
+  origin: function(origin, callback) {
+    if(!origin) return callback(null, true); 
+    if(allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'CORS policy does not allow this origin';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
 app.use(express.json());
 app.use("/articles", articlesRoutes);
 // Mount the health route , 
