@@ -1,5 +1,6 @@
 // API client for backend requests
-const BASE_URL = "http://localhost:8080";
+// backend here is the service name
+const BASE_URL = "http://backend:8080"; 
 
 export async function fetchArticles() {
   try {
