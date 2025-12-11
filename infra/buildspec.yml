@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com)
+      - REPOSITORY_BACKEND=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION/hero-backend
+      - REPOSITORY_FRONTEND=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION/hero-frontend
+      - echo Pre-build phase complete.
+  build:
+    commands:
+      - echo Building backend Docker image...
+      - docker build -t hero-backend ../backend
+      - docker tag hero-backend:latest $REPOSITORY_BACKEND:latest
+      - echo Building frontend Docker image...
+      - docker build -t hero-frontend ../frontend
+      - docker tag hero-frontend:latest $REPOSITORY_FRONTEND:latest
+      - echo Build phase complete.
+  post_build:
+    commands:
+      - echo Pushing backend image to ECR...
+      - docker push $REPOSITORY_BACKEND:latest
+      - echo Pushing frontend image to ECR...
+      - docker push $REPOSITORY_FRONTEND:latest
+      - echo Build and push complete.
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
