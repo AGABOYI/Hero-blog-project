@@ -1,0 +1,62 @@
+.container-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  //background-color: dodgerblue;
+  padding: 10px;
+  justify-content: space-evenly;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 350px));
+  row-gap: 30px;
+  
+}
+.article-card {
+  align-self: start;
+ // background-color: #f1f1f1;
+  border: 1px solid black;
+  padding: 20px;
+  border-radius: 25px;
+}
+
+.article-card-title {
+  background-color: #A8E6CF;
+  border-radius: 25px;
+  padding: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.article-card-content {
+  --max-lines:5;
+  --line-height:1.4;
+ // background-color: orange;
+  max-height:calc(var(--max-lines) * 1em * var(--line-height));
+  line-height:var(--line-height); 
+  overflow:hidden;
+  position:relative ; 
+  //padding: 10px;   
+}
+.article-card-content::before {
+  content:"";
+  position:absolute;
+  height : calc(1em * var(--line-height));
+  width:100%;
+  bottom:0;
+  //padding: 10px;
+  pointer-events:none;
+  background:linear-gradient(to bottom,transparent,white)
+}
+
+.article-card-expand-button {
+  appearance: none;
+  border: 1px solid black;
+  padding: .8em;
+  border-radius: .25em;
+  cursor: pointer;
+  margin-top: 1rem;
+
+}
+.article-card-expand-button:hover{
+  background-color: #CCC
+}
+
+
