@@ -6,7 +6,7 @@ set -e
 # ===========================
 
 # Go to the directory where docker-compose.yml is
-cd /home/ec2-user/Hero-blog-project || exit
+cd /home/ec2-user/Hero-blog-project/infra || exit
 
 echo "🚀 Pulling latest Docker images from ECR..."
 # Pull the latest images 
