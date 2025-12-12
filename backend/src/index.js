@@ -12,9 +12,13 @@ const app = express();
 const server = http.createServer(app);
 const port = 8080;
 const allowedOrigins = [
-  "http://localhost:3000", //  
-  "http://frontend:3000",  // 
-  "http://localhost:5173"  // 
+  "http://localhost:3000", 
+  "http://frontend:3000",  
+  "http://localhost:5173" ,
+  // ADD YOUR PUBLIC FRONTEND DOMAIN HERE:
+  "http://16.16.67.98:3000"
+
+  // In production mode make sure to allow inbound origin
 ];
 
 app.use(cors({
