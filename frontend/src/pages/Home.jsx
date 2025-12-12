@@ -1,80 +1,65 @@
+// frontend/src/pages/Home.jsx
 import { useState, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard.jsx';
+import { fetchArticles } from '../api/client.js';
 
 export default function Home() {
-  const [articles, setArticles] = useState([]);        // State to store articles
-  const [clickedCardId, setClickedCardId] = useState(null); // State to track expanded card
+  const [articles, setArticles] = useState([]);
+  const [clickedCardId, setClickedCardId] = useState(null);
 
-  // Fetch initial articles when the component mounts
+  // Fetch initial articles
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const res = await fetch("http://localhost:8080/articles"); // backend GET /articles
-        const data = await res.json();
-
-        // Ensure all articles have an id from the backend
-        const articlesWithId = data.map((article, idx) => ({
-          ...article,
-          id: article.id ?? idx // fallback only if DB didn't return id (should not happen)
-        }));
-
-        setArticles(articlesWithId); // populate state with initial articles
-      } catch (error) {
-        console.error("Failed to fetch articles:", error);
-      }
+    const fetchInitialArticles = async () => {
+      const data = await fetchArticles();
+      const articlesWithId = data.map((article, idx) => ({
+        ...article,
+        id: article.id ?? idx,
+      }));
+      setArticles(articlesWithId);
     };
 
-    fetchArticles();
-  }, []); // empty dependency array → runs only once
+    fetchInitialArticles();
+  }, []);
 
   // WebSocket for real-time updates
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
+    // Hardcoded URL for production, localhost for dev
+    const WS_URL =
+      import.meta.env.MODE === "development"
+        ? "ws://localhost:8080"
+        : "ws://16.16.67.98:3000";
+
+    const ws = new WebSocket(WS_URL);
 
     ws.onopen = () => console.log("Frontend: WebSocket connected");
     ws.onclose = () => console.log("Frontend: WebSocket disconnected");
 
     ws.onmessage = (event) => {
-      console.log("Received raw WS message:", event.data);
-
       try {
         const msg = JSON.parse(event.data);
-
-        if (
-          msg.type === "new_article" &&
-          Array.isArray(msg.data) &&
-          msg.data.length > 0 &&
-          msg.data[0].title &&
-          msg.data[0].content
-        ) {
-          // Map to ensure each article has an id (from DB)
+        if (msg.type === "new_article" && Array.isArray(msg.data)) {
           const newArticles = msg.data.map((article, idx) => ({
             ...article,
-            id: article.id ?? `ws-${Date.now()}-${idx}` // fallback unique id if missing
+            id: article.id ?? `ws-${Date.now()}-${idx}`,
           }));
-
-          // Append new articles to state
           setArticles((prev) => [...prev, ...newArticles]);
-        } else {
-          console.warn("Received invalid new_article message:", msg);
         }
-      } catch (error) {
-        console.error("WebSocket message parsing error:", error);
+      } catch (err) {
+        console.error("WebSocket message parsing error:", err);
       }
     };
 
-    // Cleanup on unmount
     return () => ws.close();
   }, []);
 
   return (
-    <div className='container-grid'>
+    <div className="container-grid">
       {articles.map((article) => (
-        <ArticleCard 
-          key={article.id} // unique id
-          title={article.title} 
-          content={article.content} 
-          author={article.author} 
+        <ArticleCard
+          key={article.id}
+          title={article.title}
+          content={article.content}
+          author={article.author}
           date={article.date}
           expanded={clickedCardId === article.id}
           onClick={() =>
@@ -85,3 +70,4 @@ export default function Home() {
     </div>
   );
 }
+ 
