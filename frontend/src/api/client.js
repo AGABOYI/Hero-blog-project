@@ -1,6 +1,8 @@
-// API client for backend requests
-// backend here is the service name
-const BASE_URL = "http://backend:8080"; 
+// Choose backend URL based on environment
+const BASE_URL =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:8080"       // local dev backend
+    : "http://16.16.67.98:3000";    // production backend 
 
 export async function fetchArticles() {
   try {
