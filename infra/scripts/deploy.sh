@@ -5,8 +5,8 @@ set -e
 # Deployment script for EC2
 # ===========================
 
-# 1️⃣ Go to the directory where docker-compose.yml is
-cd /home/ec2-user/your-project-folder || exit
+# Go to the directory where docker-compose.yml is
+cd /home/ec2-user/Hero-blog-project || exit
 
 echo "🚀 Pulling latest Docker images from ECR..."
 # Pull the latest images 
