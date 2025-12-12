@@ -6,12 +6,12 @@ set -e
 # ===========================
 
 # Go to the directory where docker-compose.yml is
-cd /home/ec2-user/Hero-blog-project/infra || exit
+cd /home/ec2-user/$path_to_docker_compose || exit
 
 echo "🚀 Pulling latest Docker images from ECR..."
 # Pull the latest images 
-docker pull 137345587313.dkr.ecr.eu-north-1.amazonaws.com/hero-backend:latest
-docker pull 137345587313.dkr.ecr.eu-north-1.amazonaws.com/hero-frontend:latest
+docker pull $ECR_BACKEND_REPO:latest
+docker pull $ECR_FRONTEND_REPO:latest
 
 echo "🛑 Stopping any existing containers..."
 docker-compose down
